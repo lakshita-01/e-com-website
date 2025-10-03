@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://public-frontend-cos.metadl.com/mgx/img/favicon.png" type="image/png">
+    <title>E-Commerce Product Showcase</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav">
+                <div class="logo">
+                    <h2><i class="fas fa-store"></i> ShopHub</h2>
+                </div>
+                <div class="nav-links">
+                    <button class="auth-btn" id="authButton">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Login</span>
+                    </button>
+                    <div class="user-menu" id="userMenu" style="display: none;">
+                        <div class="user-dropdown" id="userDropdown" style="display: none;">
+                            <a href="#" onclick="authManager.showUserProfile()">
+                                <i class="fas fa-user"></i> Profile
+                            </a>
+                            <a href="#" onclick="authManager.showOrderHistory()">
+                                <i class="fas fa-history"></i> Order History
+                            </a>
+                            <a href="#" onclick="authManager.logout()">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </div>
+                    </div>
+                    <button class="cart-btn" id="cartBtn">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Discover Amazing Products</h1>
+                <p>Find the perfect items for your lifestyle with our curated collection</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products Carousel -->
+    <section class="featured-section">
+        <div class="container">
+            <h2 class="section-title">Featured Products</h2>
+            <div class="swiper featured-swiper">
+                <div class="swiper-wrapper" id="featuredProducts">
+                    <!-- Featured products will be loaded here -->
+                </div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Filter -->
+    <section class="products-section">
+        <div class="container">
+            <div class="filter-container">
+                <h2 class="section-title">All Products</h2>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="electronics">Electronics</button>
+                    <button class="filter-btn" data-filter="clothing">Clothing</button>
+                    <button class="filter-btn" data-filter="books">Books</button>
+                    <button class="filter-btn" data-filter="home">Home</button>
+                </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="products-grid" id="productsGrid">
+                <!-- Products will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Authentication Modal -->
+    <div class="modal" id="authModal">
+        <div class="modal-content auth-modal">
+            <span class="close-btn" onclick="authManager.closeAuthModal()">&times;</span>
+            <div class="auth-container" id="authContent">
+                <!-- Auth content will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Order History Modal -->
+    <div class="modal" id="orderHistoryModal">
+        <div class="modal-content order-history-modal">
+            <span class="close-btn" onclick="orderHistoryManager.closeOrderHistory()">&times;</span>
+            <div class="order-history-header">
+                <h2>Order History</h2>
+                <div class="order-filters">
+                    <button class="filter-btn active" onclick="orderHistoryManager.filterOrders('all')">All</button>
+                    <button class="filter-btn" onclick="orderHistoryManager.filterOrders('confirmed')">Confirmed</button>
+                    <button class="filter-btn" onclick="orderHistoryManager.filterOrders('shipped')">Shipped</button>
+                    <button class="filter-btn" onclick="orderHistoryManager.filterOrders('delivered')">Delivered</button>
+                </div>
+            </div>
+            <div class="order-history-content" id="orderHistoryContent">
+                <!-- Order history will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Tracking Modal -->
+    <div class="modal" id="trackingModal">
+        <div class="modal-content tracking-modal">
+            <span class="close-btn" onclick="orderHistoryManager.closeTrackingModal()">&times;</span>
+            <div id="trackingContent">
+                <!-- Tracking content will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <div class="modal-body">
+                <div class="modal-image">
+                    <img id="modalImage" src="" alt="">
+                </div>
+                <div class="modal-info">
+                    <h2 id="modalTitle"></h2>
+                    <p class="modal-price" id="modalPrice"></p>
+                    <p class="modal-description" id="modalDescription"></p>
+                    <div class="modal-actions">
+                        <div class="quantity-selector">
+                            <button class="qty-btn" id="decreaseQty">-</button>
+                            <input type="number" id="quantity" value="1" min="1" max="10">
+                            <button class="qty-btn" id="increaseQty">+</button>
+                        </div>
+                        <button class="btn btn-primary" id="addToCartModal">Add to Cart</button>
+                        <button class="btn btn-secondary" id="buyNowModal">Buy Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Checkout Modal -->
+    <div class="modal" id="checkoutModal">
+        <div class="modal-content checkout-modal">
+            <span class="close-btn" onclick="checkoutManager.closeCheckoutModal()">&times;</span>
+            <div class="checkout-header">
+                <h2>Checkout</h2>
+                <div class="checkout-steps" id="checkoutSteps">
+                    <!-- Steps will be rendered here -->
+                </div>
+            </div>
+            <div class="checkout-body" id="checkoutStepContent">
+                <!-- Step content will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3>Shopping Cart</h3>
+            <button class="close-cart" id="closeCart">&times;</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <!-- Cart items will be loaded here -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <strong>Total: $<span id="cartTotal">0.00</span></strong>
+            </div>
+            <button class="btn btn-primary checkout-btn" id="checkoutBtn">Checkout</button>
+        </div>
+    </div>
+
+    <!-- Cart Overlay -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+
+    <!-- Success Message -->
+    <div class="success-message" id="successMessage">
+        <i class="fas fa-check-circle"></i>
+        <span id="successText">Product added to cart!</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3><i class="fas fa-store"></i> ShopHub</h3>
+                    <p>Your trusted online marketplace for quality products</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#products">Products</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Follow Us</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 ShopHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="./products.js"></script>
+    <script src="./auth.js"></script>
+    <script src="./orderHistory.js"></script>
+    <script src="./paymentGateway.js"></script>
+    <script src="./location.js"></script>
+    <script src="./payment.js"></script>
+    <script src="./checkout.js"></script>
+    <script src="./cart.js"></script>
+    <script src="./script.js"></script>
+</body>
+
+</html>
